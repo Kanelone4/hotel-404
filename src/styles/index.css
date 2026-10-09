@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+
+/* `touch:` variant — active when <html data-touch> (set by uiStore). */
+@custom-variant touch (&:where([data-touch], [data-touch] *));
+
+@theme {
+  --color-ink: #0b0f0e;
+  --color-night: #111917;
+  --color-sage: #8fa89a;
+  --color-sage-dim: #4d5f56;
+  --color-amber: #d9a441;
+  --color-amber-soft: #f1c97a;
+  --color-neon: #ff4f5e;
+  --color-deep: #10284a;
+  --color-paper: #ece4d2;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow: hidden;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Notch / home-indicator aware spacing for the HUD and touch controls. */
+.safe-t {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+.safe-x {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 3px;
+}
+
+/* Film grain used by DOM screens (intro, credits, overlays). */
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.09;
+  animation: grain 0.6s steps(4) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -4%); }
+  75% { transform: translate(-1%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  41% { opacity: 1; }
+  42% { opacity: 0.35; }
+  43% { opacity: 1; }
+  77% { opacity: 1; }
+  78% { opacity: 0.6; }
+  79% { opacity: 1; }
+}
+
+.flicker {
+  animation: flicker 4.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain::after,
+  .flicker {
+    animation: none;
+  }
+}
